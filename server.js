@@ -20,7 +20,9 @@ function handler (request, response) {
       }
       response.end(file);
     });
-  } else if (endpoint === "/node") {
+  }
+
+  else if (endpoint === "/node") {
   //  console.log("wow node time");
     response.writeHead(200, {"Content-Type": "text/html"})
     response.write("wow node time");
@@ -31,9 +33,29 @@ function handler (request, response) {
     response.write("node girls just wanna have fun");
     response.end();
   } else {
-    response.writeHead(404, {"Content-Type": "text/html"});
-    response.end();
-  }
+    // console.log(endpoint)
+    fs.readFile(__dirname + '/public/' + endpoint, function(error, file) {
+      if (error) {
+        response.writeHead(404, {"Content-Type": "text/html"});
+        response.end();
+      }
+      else {
+        const extension = endpoint.split(".")[1];
+        const extensionType = {
+          css: "text/css",
+          js: "application/javascript",
+          ico: "image/x-icon",
+          jpg: "image/jpeg",
+          png: "image/png"
+        };
+
+        response.writeHead(200, {"Content-Type": extensionType[extension]} )
+        response.end(file);
+      }
+    })
+
+
+      }
 }
 
 var server = http.createServer(handler);
