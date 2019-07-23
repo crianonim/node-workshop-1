@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require('fs');
+var querystring = require('querystring');
 
 // var message = 'I am so happy to be part of the Node Girls workshop!';
 
@@ -32,7 +33,23 @@ function handler (request, response) {
     response.writeHead(200, {"Content-Type": "text/html"})
     response.write("node girls just wanna have fun");
     response.end();
-  } else {
+  } else if (endpoint === "/create-post" && method === "POST") {
+      var allTheData = '';
+      request.on('data', function (chunkOfData) {
+        allTheData += chunkOfData;
+      });
+      request.on('end', function () {
+        console.log(allTheData);
+        var convertedData = querystring.parse(allTheData);
+        console.log(convertedData);
+        response.writeHead(301, {"Location": "/"})
+        response.end();
+      });
+
+  }
+
+
+  else {
     // console.log(endpoint)
     fs.readFile(__dirname + '/public/' + endpoint, function(error, file) {
       if (error) {
